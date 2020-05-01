@@ -1,0 +1,20 @@
+{
+  "name": "install-bundletool",
+  "version": "1.0.0",
+  "description": "",
+  "main": "install-bundletool.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "azure-pipelines-task-lib": "^2.9.3",
+    "azure-pipelines-tool-lib": "^0.12.0",
+    "path": "^0.12.7"
+  },
+  "devDependencies": {
+    "@types/node": "^13.13.2",
+    "@types/q": "^1.5.2"
+  }
+}
