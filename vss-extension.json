@@ -4,13 +4,13 @@
     "name": "Bundletool Helper",
     "version": "1.0.0",
     "publisher": "damienaicheh",
-    "public": false,
+    "public": true,
     "targets": [
         {
             "id": "Microsoft.VisualStudio.Services"
         }
     ],
-    "description": "Easily use bundletool in your pipelines.",
+    "description": "Easily use bundletool in your pipelines",
     "icons": {
         "default": "icon.png"
     },

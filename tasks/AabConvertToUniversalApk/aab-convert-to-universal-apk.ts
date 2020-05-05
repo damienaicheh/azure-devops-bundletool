@@ -8,7 +8,7 @@ async function run() {
         const bundletoolPath = task.getVariable(BUNDLETOOL_ENV_PATH) || process.env[BUNDLETOOL_ENV_PATH];
         if (!bundletoolPath) {
             task.error(`Bundletool is not found, the ${BUNDLETOOL_ENV_PATH} environment variable must be set before using this task (You can use 'InstallBundletool' task).`)
-            task.setResult(task.TaskResult.Failed, `The keystorePassword is not defined.`);
+            task.setResult(task.TaskResult.Failed, `Bundletool is not defined.`);
             process.exit(1);
         }
 

@@ -4,7 +4,7 @@
 
 ## Install
 
-Available on [Visual Studio Marketplace]()
+Available on [Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=DamienAicheh.bundletool-tasks)
 
 ## Features
 

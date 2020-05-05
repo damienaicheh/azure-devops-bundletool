@@ -12,7 +12,7 @@ Check the [Github](https://github.com/damienaicheh/azure-devops-bundletool) repo
 
 ## Basic usage
 
-Install lastest version of bundletool:
+Install latest version of bundletool:
 
 ```yml
 - task: InstallBundletool@1
