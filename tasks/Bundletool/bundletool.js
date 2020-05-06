@@ -43,9 +43,9 @@ function run() {
         var bundletoolPath, bundletoolArguments, java, args, javaResult;
         return __generator(this, function (_a) {
             try {
-                bundletoolPath = task.getVariable(BUNDLETOOL_ENV_PATH) || process.env[BUNDLETOOL_ENV_PATH];
+                bundletoolPath = task.getVariable(BUNDLETOOL_ENV_PATH) || process.env[BUNDLETOOL_ENV_PATH] || task.getPathInput('bundletoolJarPath', true);
                 if (!bundletoolPath) {
-                    task.error("Bundletool is not found, the " + BUNDLETOOL_ENV_PATH + " environment variable must be set before using this task (You can use 'InstallBundletool' task).");
+                    task.error("Bundletool is not found, the " + BUNDLETOOL_ENV_PATH + " environment variable must be set before using this task (You can use 'InstallBundletool' task). Also you can use the property bundletoolJarPath of this task to give your own bundletool jar path.");
                     task.setResult(task.TaskResult.Failed, "Bundletool is not defined.");
                     process.exit(1);
                 }

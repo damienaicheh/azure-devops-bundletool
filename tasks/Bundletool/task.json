@@ -14,7 +14,7 @@
     "version": {
         "Major": 1,
         "Minor": 0,
-        "Patch": 0
+        "Patch": 1
     },
     "instanceNameFormat": "Echo $(samplestring)",
     "inputs": [
@@ -25,6 +25,14 @@
             "defaultValue": "version",
             "required": true,
             "helpMarkDown": "Provide any options to pass to the bundletool command line. Default is: version"
+        },
+        {
+            "name": "bundletoolJarPath",
+            "type": "string",
+            "label": "Custom bundeletool jar path",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Provide a custom bundletool jar path if you need and don't use the InstallBundletool task."
         }
     ],
     "execution": {

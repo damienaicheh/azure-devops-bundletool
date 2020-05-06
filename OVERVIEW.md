@@ -36,6 +36,7 @@ Convert your Android App Bundle (Aab) into a universal Apk, it's useful for plat
     keystoreAlias: '$(key.alias)'
     keystoreAliasPassword: '$(key.password)'
     outputFolder: 'path/to/folder' # Optional. Default is: $(Build.SourcesDirectory)
+    bundletoolJarPath: 'path/to/bundletooljar' # Optional if you use the InstallBundletool task or set the bundletoolpath environment variable.
 ```
 
 Use custom arguments for bundletool:
@@ -44,4 +45,5 @@ Use custom arguments for bundletool:
 - task: Bundletool@1
   inputs:
     bundletoolArguments: 'version'
+    bundletoolJarPath: 'path/to/bundletooljar' # Optional if you use the InstallBundletool task or set the bundletoolpath environment variable.
 ```
