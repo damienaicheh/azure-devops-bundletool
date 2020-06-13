@@ -38,7 +38,7 @@ async function run() {
         let outputApksPath = path.join(workingDirectory, 'extract.apks');
 
         let java: string = task.which('java', true);
-        let args = ['-jar', bundletoolPath, 'build-apks', `--bundle=${filesToConvert[0]}`, '--mode=universal', `--output=${outputApksPath}`, `--ks=${keystoreFilePath}`, `--ks-pass=pass:${keystorePassword}`, `--ks-key-alias=${keystoreAlias}`, `--key-pass=pass:${keystoreAliasPassword}`];
+        let args = ['-jar', bundletoolPath, 'build-apks', `--bundle=${filesToConvert[0]}`, '--mode=universal', `--output=${outputApksPath}`, `--ks=${keystoreFilePath}`, `--ks-pass=pass:${keystorePassword}`, `--ks-key-alias=${keystoreAlias}`, `--key-pass=pass:${keystoreAliasPassword}`, '--overwrite'];
         let javaResult = task.execSync(java, args);
 
         if (javaResult.code !== 0) {
