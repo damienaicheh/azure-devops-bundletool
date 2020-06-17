@@ -69,7 +69,7 @@ function run() {
                 workingDirectory = task.cwd();
                 outputApksPath = path.join(workingDirectory, 'extract.apks');
                 java = task.which('java', true);
-                args = ['-jar', bundletoolPath, 'build-apks', "--bundle=" + filesToConvert[0], '--mode=universal', "--output=" + outputApksPath, "--ks=" + keystoreFilePath, "--ks-pass=pass:" + keystorePassword, "--ks-key-alias=" + keystoreAlias, "--key-pass=pass:" + keystoreAliasPassword];
+                args = ['-jar', bundletoolPath, 'build-apks', "--bundle=" + filesToConvert[0], '--mode=universal', "--output=" + outputApksPath, "--ks=" + keystoreFilePath, "--ks-pass=pass:" + keystorePassword, "--ks-key-alias=" + keystoreAlias, "--key-pass=pass:" + keystoreAliasPassword, '--overwrite'];
                 javaResult = task.execSync(java, args);
                 if (javaResult.code !== 0) {
                     task.error("An error occured when running bundletool: " + bundletoolPath + " jar using java, verify java is correctly install in your agent.");
