@@ -1,15 +1,19 @@
 {
   "name": "bundletool",
   "version": "1.0.0",
-  "description": "",
+  "description": "Use Bundletool commands",
   "main": "bundletool.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:damienaicheh/azure-devops-bundletool.git"
+  },
+  "author": "Damien AICHEH",
   "license": "ISC",
   "dependencies": {
-    "azure-pipelines-task-lib": "^2.9.3"
+    "azure-pipelines-task-lib": "^3.1.10"
   },
   "devDependencies": {
     "@types/node": "^13.13.2",
