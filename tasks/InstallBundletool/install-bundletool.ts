@@ -48,11 +48,8 @@ async function run() {
 
                 process.exit(1);
             }
-
-            const workingDirectory = task.cwd();
-            const toolPath = path.join(workingDirectory, bundletoolJarName);
-
-            tool.cacheDir(toolPath, BUNDLETOOL_NAME, versionTag, arch);
+            
+           
 
             let cacheDir = await tool.cacheDir(downloadDirectory, BUNDLETOOL_NAME, versionTag, arch);
             const toolPath = path.join(cacheDir, bundletoolJarName);
