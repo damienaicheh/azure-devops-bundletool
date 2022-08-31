@@ -31,10 +31,14 @@ async function run() {
         let bundletoolJarUrl = res['assets'][0]['browser_download_url'];
         let bundletoolJarName = res['assets'][0]['name'];
         var bundletoolPath = tool.findLocalTool(BUNDLETOOL_NAME, versionTag, arch);
+        let agentTempDirectory = task.getVariable("Agent.TempDirectory");
+        let downloadDirectory = path.join(agentTempDirectory, BUNDLETOOL_NAME, versionTag, arch);
+        task.mkdirP(downloadDirectory);
+        let outputDownloadedFile: string = path.join(downloadDirectory, bundletoolJarName);
 
         // Check if bundletool already available
         if (!bundletoolPath) {
-            let curlResult = await downloading(bundletoolJarName, bundletoolJarUrl);
+            let curlResult = await downloading(bundletoolJarName, bundletoolJarUrl, outputDownloadedFile);
 
             if (curlResult.code !== 0) {
                 if (curlResult.error != null) {
@@ -50,10 +54,14 @@ async function run() {
 
             tool.cacheDir(toolPath, BUNDLETOOL_NAME, versionTag, arch);
 
+            let cacheDir = await tool.cacheDir(downloadDirectory, BUNDLETOOL_NAME, versionTag, arch);
+            const toolPath = path.join(cacheDir, bundletoolJarName);
+
             task.setVariable(BUNDLETOOL_ENV_PATH, toolPath);
 
         } else {
-            task.setVariable(BUNDLETOOL_ENV_PATH, bundletoolPath);
+            const toolPath = path.join(bundletoolPath, bundletoolJarName);
+            task.setVariable(BUNDLETOOL_ENV_PATH, toolPath);
         }
 
         task.setResult(task.TaskResult.Succeeded, "Bundletool is ready to use.");
@@ -63,7 +71,9 @@ async function run() {
     }
 }
 
-async function downloading(fileName: string, url: string) {
+async function downloading(fileName: string, url: string, downloadedFile:string) {
+    const curlIsSilent: boolean = task.getBoolInput('curlIsSilent', false);
+    const ignoreSsl = task.getBoolInput('ignorSslError', false);
     let curl: string = task.which('curl', true);
     var args = ['--location', /*'-o', fileName,*/ url];
     if (ignoreSsl && ignoreSsl == true) {
