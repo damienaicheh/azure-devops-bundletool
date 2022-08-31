@@ -1,5 +1,8 @@
 import task = require('azure-pipelines-task-lib');
 import path = require('path');
+import * as os from 'os';
+var unzip = require('unzip-stream');
+var fs = require('fs-extra'); 
 
 const BUNDLETOOL_ENV_PATH = 'bundletoolpath';
 
@@ -51,14 +54,38 @@ async function run() {
             process.exit(1);
         }
 
-        let unzip: string = task.which('unzip', true);
-        task.execSync(unzip, [outputApksPath, '-d', outputFolder]);
+       
+        let arch: string = findArchitecture();
+
+        if (arch == 'windows') {
+            unzipFile(outputApksPath, outputFolder);
+        }
+        else {
+            let unzipCommand: string = task.which('unzip', true);
+            task.execSync(unzipCommand, [outputApksPath, '-d', outputFolder]);
+        }
+       
 
         task.setResult(task.TaskResult.Succeeded, `The universal apk was succesfully generated here: ${outputFolder}`);
     }
     catch (err) {
         task.setResult(task.TaskResult.Failed, err.message);
     }
+}
+
+function findArchitecture() {
+    if (os.platform() === 'darwin') {
+        return "macos";
+    }
+    else if (os.platform() === 'linux') {
+        return "linux";
+    } else {
+        return "windows";
+    }
+}
+
+function unzipFile( source:string,output:string) {
+    return fs.createReadStream(source).pipe(unzip.Extract({ path: output }));
 }
 
 run();
