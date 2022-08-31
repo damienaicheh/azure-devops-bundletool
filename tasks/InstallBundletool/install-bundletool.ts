@@ -65,7 +65,17 @@ async function run() {
 
 async function downloading(fileName: string, url: string) {
     let curl: string = task.which('curl', true);
-    var args = ['--location', '--silent', '-o', fileName, url];
+    var args = ['--location', /*'-o', fileName,*/ url];
+    if (ignoreSsl && ignoreSsl == true) {
+        args.push('--ssl-no-revoke');
+    }
+    if (curlIsSilent && curlIsSilent == true) {
+        args.push('--silent');
+    }
+    if (downloadedFile) {
+        args.push('--output', downloadedFile);
+    }
+    
     let curlResult = task.execSync(curl, args);
     return curlResult;
 }
