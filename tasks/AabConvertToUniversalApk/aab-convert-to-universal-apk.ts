@@ -78,11 +78,17 @@ async function run() {
 
         let newApkName: string = task.getInput('newUniversalApkName', false);
         if (newApkName) {
-            task.debug(`a new name has been set for universal.apk : ${newApkName}`);
-            task.debug(`renaming ${outputFolder}/universal.apk -> ${outputFolder}/${newApkName}`);
-            fs.renameSync(path.join(outputFolder, 'universal.apk'), path.join(outputFolder, newApkName));
-            task.debug("file renamed");
-            task.setResult(task.TaskResult.Succeeded, `The universal apk was succesfully generated here: ${outputFolder}`);
+            try {
+                task.debug(`a new name has been set for universal.apk : ${newApkName}`);
+                task.debug(`renaming ${outputFolder}/universal.apk -> ${outputFolder}/${newApkName}`);
+                fs.renameSync(path.join(outputFolder, 'universal.apk'), path.join(outputFolder, newApkName));
+                task.debug("file renamed");
+                task.setResult(task.TaskResult.Succeeded, `The universal apk was succesfully generated here: ${outputFolder}`);
+            } catch (err) {
+                task.error(`Error while renaming ${outputFolder}/universal.apk -> ${outputFolder}/${newApkName} `);
+                task.error(err);
+                process.exit(1);
+            }           
           
         } else {
             task.setResult(task.TaskResult.Succeeded, `The universal apk was succesfully generated here: ${outputFolder}`);
