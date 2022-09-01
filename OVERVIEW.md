@@ -19,6 +19,8 @@ Install latest version of bundletool:
   inputs:
     username: 'githubUsername' # Optional but RECOMMANDED
     personalAccessToken: '$(githubPersonnalAccessToken)' # Optional but RECOMMANDED
+    ignorSslError: 'ignorSslError' # Optional set it to true only if you have ssl error
+    curlIsSilent: 'curlIsSilent' # Optional false by default, set it to true if you want curl to log info
 ```
 
 The Github credentials are used to only read the bundletool public repository. If you don't specify it you will be limited by the [defaults rate limits of the Github API](https://developer.github.com/v3/#rate-limiting). If the limit is reached then the task will obviously failed.
@@ -37,6 +39,7 @@ Convert your Android App Bundle (Aab) into a universal Apk, it's useful for plat
     keystoreAliasPassword: '$(key.password)'
     outputFolder: 'path/to/folder' # Optional. Default is: $(Build.SourcesDirectory)
     bundletoolJarPath: 'path/to/bundletooljar' # Optional if you use the InstallBundletool task or set the bundletoolpath environment variable.
+    newUniversalApkName: 'com.my.appication.apk' # Optional if blank the output file will be universal.apk
 ```
 
 Use custom arguments for bundletool:
