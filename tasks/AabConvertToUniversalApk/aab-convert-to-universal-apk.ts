@@ -2,7 +2,7 @@ import task = require('azure-pipelines-task-lib');
 import path = require('path');
 import * as os from 'os';
 const extract = require('extract-zip');
-var fs = require('fs-extra'); 
+import * as fs from "fs";
 
 const BUNDLETOOL_ENV_PATH = 'bundletoolpath';
 
@@ -67,17 +67,25 @@ async function run() {
                 task.error(`Error while extracting ${outputApksPath} to ${outputFolder} `);
                 task.error(err);
             }
-
-        if (arch == 'windows') {
-            unzipFile(outputApksPath, outputFolder);
+           
+            
         }
         else {
             let unzipCommand: string = task.which('unzip', true);
             task.execSync(unzipCommand, [outputApksPath, '-d', outputFolder]);
         }
-       
 
-        task.setResult(task.TaskResult.Succeeded, `The universal apk was succesfully generated here: ${outputFolder}`);
+        let newApkName: string = task.getInput('newUniversalApkName', false);
+        if (newApkName) {
+            task.debug(`a new name has been set for universal.apk : ${newApkName}`);
+            task.debug(`renaming ${outputFolder}/universal.apk -> ${outputFolder}/${newApkName}`);
+            fs.renameSync(path.join(outputFolder, 'universal.apk'), path.join(outputFolder, newApkName));
+            task.debug("file renamed");
+            task.setResult(task.TaskResult.Succeeded, `The universal apk was succesfully generated here: ${outputFolder}`);
+          
+        } else {
+            task.setResult(task.TaskResult.Succeeded, `The universal apk was succesfully generated here: ${outputFolder}`);
+        }       
     }
     catch (err) {
         task.setResult(task.TaskResult.Failed, err.message);

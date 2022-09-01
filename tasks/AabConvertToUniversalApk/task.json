@@ -65,14 +65,22 @@
             "required": false,
             "helpMarkDown": "The output folder"
         },
-        {
-            "name": "bundletoolJarPath",
-            "type": "string",
-            "label": "Custom bundeletool jar path",
-            "defaultValue": "",
-            "required": false,
-            "helpMarkDown": "Provide a custom bundletool jar path if you need and don't use the InstallBundletool task."
-        }
+      {
+        "name": "bundletoolJarPath",
+        "type": "string",
+        "label": "Custom bundeletool jar path",
+        "defaultValue": "",
+        "required": false,
+        "helpMarkDown": "Provide a custom bundletool jar path if you need and don't use the InstallBundletool task."
+      },
+      {
+        "name": "newUniversalApkName",
+        "type": "string",
+        "label": "Custom name for universal apk",
+        "defaultValue": "",
+        "required": false,
+        "helpMarkDown": "by default, the extracted apk will be universal.apk, you change change this by setting com.my.appication.apk for exemple"
+      }
     ],
     "execution": {
         "Node10": {
