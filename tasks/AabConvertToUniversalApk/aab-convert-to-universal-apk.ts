@@ -66,6 +66,7 @@ async function run() {
                 // handle any errors
                 task.error(`Error while extracting ${outputApksPath} to ${outputFolder} `);
                 task.error(err);
+                process.exit(1);
             }
            
             
