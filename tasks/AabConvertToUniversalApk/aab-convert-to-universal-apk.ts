@@ -1,7 +1,7 @@
 import task = require('azure-pipelines-task-lib');
 import path = require('path');
 import * as os from 'os';
-var unzip = require('unzip-stream');
+const extract = require('extract-zip');
 var fs = require('fs-extra'); 
 
 const BUNDLETOOL_ENV_PATH = 'bundletoolpath';
@@ -56,6 +56,17 @@ async function run() {
 
        
         let arch: string = findArchitecture();
+        task.debug(`current platform is ${arch}`);
+        if (arch === 'windows') {
+            try {
+                task.debug("starting extraction on windows platform ...");
+                await extract(outputApksPath, { dir: outputFolder });
+                task.debug('Extraction complete');
+            } catch (err) {
+                // handle any errors
+                task.error(`Error while extracting ${outputApksPath} to ${outputFolder} `);
+                task.error(err);
+            }
 
         if (arch == 'windows') {
             unzipFile(outputApksPath, outputFolder);
@@ -84,8 +95,5 @@ function findArchitecture() {
     }
 }
 
-function unzipFile( source:string,output:string) {
-    return fs.createReadStream(source).pipe(unzip.Extract({ path: output }));
-}
 
 run();
