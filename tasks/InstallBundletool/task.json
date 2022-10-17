@@ -14,13 +14,18 @@
     "version": {
         "Major": 1,
         "Minor": 3,
-        "Patch": 0
+        "Patch": 1
     },
     "groups": [
         {
             "name": "authenticationOptions",
             "displayName": "Github Authentication (Recommanded)",
             "isExpanded": true
+      },
+      {
+        "name": "advancedOptions",
+        "displayName": "Advanced options",
+        "isExpanded": true
         }
     ],
     "inputs": [
@@ -41,6 +46,24 @@
             "required": false,
             "groupName": "authenticationOptions",
             "helpMarkDown": "This is used to access the Github API to get the lastest available version of bundletool. To get your access token go to your Github account then Settings > Developer settings > Personal access tokens and click on Generate new token. Check only the public_repo access and generate it. Add it to your secure variables. If you don't specify it you will be limited by the defaults rate limits of the Github API."
+      },
+      {
+        "name": "ignorSslError",
+        "type": "boolean",
+        "label": "ignore ssl certificate",
+        "defaultValue": "false",
+        "required": false,
+        "groupName": "advancedOptions",
+        "helpMarkDown": "if you have ssl error, set it to true"
+      },
+      {
+        "name": "curlIsSilent",
+        "type": "boolean",
+        "label": "curl is silent",
+        "defaultValue": "true",
+        "required": false,
+        "groupName": "advancedOptions",
+        "helpMarkDown": "set it to false if you want to remove --silent for the curl command"
         }
     ],
     "execution": {

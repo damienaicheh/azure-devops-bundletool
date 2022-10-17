@@ -34,7 +34,12 @@ async function run() {
 
         // Check if bundletool already available
         if (!bundletoolPath) {
-            let curlResult = await downloading(bundletoolJarName, bundletoolJarUrl);
+            let agentTempDirectory = task.getVariable("Agent.TempDirectory");
+            let downloadDirectory = path.join(agentTempDirectory, BUNDLETOOL_NAME, versionTag, arch);
+            task.mkdirP(downloadDirectory);
+            let outputDownloadedFile: string = path.join(downloadDirectory, bundletoolJarName);
+
+            let curlResult = await downloading(bundletoolJarName, bundletoolJarUrl, outputDownloadedFile);
 
             if (curlResult.code !== 0) {
                 if (curlResult.error != null) {
@@ -45,15 +50,12 @@ async function run() {
                 process.exit(1);
             }
 
-            const workingDirectory = task.cwd();
-            const toolPath = path.join(workingDirectory, bundletoolJarName);
-
-            tool.cacheDir(toolPath, BUNDLETOOL_NAME, versionTag, arch);
-
+            let cacheDir = await tool.cacheDir(downloadDirectory, BUNDLETOOL_NAME, versionTag, arch);
+            const toolPath = path.join(cacheDir, bundletoolJarName);
             task.setVariable(BUNDLETOOL_ENV_PATH, toolPath);
-
         } else {
-            task.setVariable(BUNDLETOOL_ENV_PATH, bundletoolPath);
+            const toolPath = path.join(bundletoolPath, bundletoolJarName);
+            task.setVariable(BUNDLETOOL_ENV_PATH, toolPath);
         }
 
         task.setResult(task.TaskResult.Succeeded, "Bundletool is ready to use.");
@@ -63,9 +65,21 @@ async function run() {
     }
 }
 
-async function downloading(fileName: string, url: string) {
+async function downloading(fileName: string, url: string, downloadedFile: string) {
+    const curlIsSilent: boolean = task.getBoolInput('curlIsSilent', false);
+    const ignoreSsl = task.getBoolInput('ignorSslError', false);
     let curl: string = task.which('curl', true);
-    var args = ['--location', '--silent', '-o', fileName, url];
+    var args = ['--location', /*'-o', fileName,*/ url];
+    if (ignoreSsl && ignoreSsl == true) {
+        args.push('--ssl-no-revoke');
+    }
+    if (curlIsSilent && curlIsSilent == true) {
+        args.push('--silent');
+    }
+    if (downloadedFile) {
+        args.push('--output', downloadedFile);
+    }
+
     let curlResult = task.execSync(curl, args);
     return curlResult;
 }
