@@ -64,11 +64,11 @@ var BUNDLETOOL_ENV_PATH = 'bundletoolpath';
 var GITHUB_API_URL = 'https://api.github.com/repos/google/bundletool/releases/latest';
 function run() {
     return __awaiter(this, void 0, void 0, function () {
-        var arch, githubUsername, githubPersonalAccesToken, curl, args, curlGithubResult, res, versionTag, bundletoolJarUrl, bundletoolJarName, bundletoolPath, curlResult, workingDirectory, toolPath, err_1;
+        var arch, githubUsername, githubPersonalAccesToken, curl, args, curlGithubResult, res, versionTag, bundletoolJarUrl, bundletoolJarName, bundletoolPath, agentTempDirectory, downloadDirectory, outputDownloadedFile, curlResult, cacheDir, toolPath, toolPath, err_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    _a.trys.push([0, 4, , 5]);
+                    _a.trys.push([0, 5, , 6]);
                     arch = findArchitecture();
                     githubUsername = task.getInput('username', false);
                     githubPersonalAccesToken = task.getInput('personalAccessToken', false);
@@ -83,8 +83,12 @@ function run() {
                     bundletoolJarUrl = res['assets'][0]['browser_download_url'];
                     bundletoolJarName = res['assets'][0]['name'];
                     bundletoolPath = tool.findLocalTool(BUNDLETOOL_NAME, versionTag, arch);
-                    if (!!bundletoolPath) return [3 /*break*/, 2];
-                    return [4 /*yield*/, downloading(bundletoolJarName, bundletoolJarUrl)];
+                    agentTempDirectory = task.getVariable("Agent.TempDirectory");
+                    downloadDirectory = path.join(agentTempDirectory, BUNDLETOOL_NAME, versionTag, arch);
+                    task.mkdirP(downloadDirectory);
+                    outputDownloadedFile = path.join(downloadDirectory, bundletoolJarName);
+                    if (!!bundletoolPath) return [3 /*break*/, 3];
+                    return [4 /*yield*/, downloading(bundletoolJarName, bundletoolJarUrl, outputDownloadedFile)];
                 case 1:
                     curlResult = _a.sent();
                     if (curlResult.code !== 0) {
@@ -94,32 +98,45 @@ function run() {
                         task.error("An error occured when downloading bundletool from this url, please verify that the url exist by copy-paste it into your favorite navigator: " + bundletoolJarUrl);
                         process.exit(1);
                     }
-                    workingDirectory = task.cwd();
-                    toolPath = path.join(workingDirectory, bundletoolJarName);
-                    tool.cacheDir(toolPath, BUNDLETOOL_NAME, versionTag, arch);
-                    task.setVariable(BUNDLETOOL_ENV_PATH, toolPath);
-                    return [3 /*break*/, 3];
+                    return [4 /*yield*/, tool.cacheDir(downloadDirectory, BUNDLETOOL_NAME, versionTag, arch)];
                 case 2:
-                    task.setVariable(BUNDLETOOL_ENV_PATH, bundletoolPath);
-                    _a.label = 3;
+                    cacheDir = _a.sent();
+                    toolPath = path.join(cacheDir, bundletoolJarName);
+                    task.setVariable(BUNDLETOOL_ENV_PATH, toolPath);
+                    return [3 /*break*/, 4];
                 case 3:
-                    task.setResult(task.TaskResult.Succeeded, "Bundletool is ready to use.");
-                    return [3 /*break*/, 5];
+                    toolPath = path.join(bundletoolPath, bundletoolJarName);
+                    task.setVariable(BUNDLETOOL_ENV_PATH, toolPath);
+                    _a.label = 4;
                 case 4:
+                    task.setResult(task.TaskResult.Succeeded, "Bundletool is ready to use.");
+                    return [3 /*break*/, 6];
+                case 5:
                     err_1 = _a.sent();
                     task.setResult(task.TaskResult.Failed, err_1.message);
-                    return [3 /*break*/, 5];
-                case 5: return [2 /*return*/];
+                    return [3 /*break*/, 6];
+                case 6: return [2 /*return*/];
             }
         });
     });
 }
-function downloading(fileName, url) {
+function downloading(fileName, url, downloadedFile) {
     return __awaiter(this, void 0, void 0, function () {
-        var curl, args, curlResult;
+        var curlIsSilent, ignoreSsl, curl, args, curlResult;
         return __generator(this, function (_a) {
+            curlIsSilent = task.getBoolInput('curlIsSilent', false);
+            ignoreSsl = task.getBoolInput('ignorSslError', false);
             curl = task.which('curl', true);
-            args = ['--location', '--silent', '-o', fileName, url];
+            args = ['--location', /*'-o', fileName,*/ url];
+            if (ignoreSsl && ignoreSsl == true) {
+                args.push('--ssl-no-revoke');
+            }
+            if (curlIsSilent && curlIsSilent == true) {
+                args.push('--silent');
+            }
+            if (downloadedFile) {
+                args.push('--output', downloadedFile);
+            }
             curlResult = task.execSync(curl, args);
             return [2 /*return*/, curlResult];
         });

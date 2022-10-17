@@ -54,7 +54,7 @@ async function run() {
             process.exit(1);
         }
 
-       
+
         let arch: string = findArchitecture();
         task.debug(`current platform is ${arch}`);
         if (arch === 'windows') {
@@ -68,12 +68,12 @@ async function run() {
                 task.error(err);
                 process.exit(1);
             }
-           
-            
         }
         else {
+            task.debug("starting extraction on linux or mac platform ...");
             let unzipCommand: string = task.which('unzip', true);
             task.execSync(unzipCommand, [outputApksPath, '-d', outputFolder]);
+            task.debug('Extraction complete');
         }
 
         let newApkName: string = task.getInput('newUniversalApkName', false);
@@ -83,16 +83,15 @@ async function run() {
                 task.debug(`renaming ${outputFolder}/universal.apk -> ${outputFolder}/${newApkName}`);
                 fs.renameSync(path.join(outputFolder, 'universal.apk'), path.join(outputFolder, newApkName));
                 task.debug("file renamed");
-                task.setResult(task.TaskResult.Succeeded, `The universal apk was succesfully generated here: ${outputFolder}`);
+                task.setResult(task.TaskResult.Succeeded, `The ${newApkName} apk was succesfully generated here: ${outputFolder}`);
             } catch (err) {
                 task.error(`Error while renaming ${outputFolder}/universal.apk -> ${outputFolder}/${newApkName} `);
                 task.error(err);
                 process.exit(1);
-            }           
-          
+            }
         } else {
             task.setResult(task.TaskResult.Succeeded, `The universal apk was succesfully generated here: ${outputFolder}`);
-        }       
+        }
     }
     catch (err) {
         task.setResult(task.TaskResult.Failed, err.message);

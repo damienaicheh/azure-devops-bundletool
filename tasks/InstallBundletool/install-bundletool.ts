@@ -31,13 +31,14 @@ async function run() {
         let bundletoolJarUrl = res['assets'][0]['browser_download_url'];
         let bundletoolJarName = res['assets'][0]['name'];
         var bundletoolPath = tool.findLocalTool(BUNDLETOOL_NAME, versionTag, arch);
-        let agentTempDirectory = task.getVariable("Agent.TempDirectory");
-        let downloadDirectory = path.join(agentTempDirectory, BUNDLETOOL_NAME, versionTag, arch);
-        task.mkdirP(downloadDirectory);
-        let outputDownloadedFile: string = path.join(downloadDirectory, bundletoolJarName);
 
         // Check if bundletool already available
         if (!bundletoolPath) {
+            let agentTempDirectory = task.getVariable("Agent.TempDirectory");
+            let downloadDirectory = path.join(agentTempDirectory, BUNDLETOOL_NAME, versionTag, arch);
+            task.mkdirP(downloadDirectory);
+            let outputDownloadedFile: string = path.join(downloadDirectory, bundletoolJarName);
+
             let curlResult = await downloading(bundletoolJarName, bundletoolJarUrl, outputDownloadedFile);
 
             if (curlResult.code !== 0) {
@@ -48,14 +49,10 @@ async function run() {
 
                 process.exit(1);
             }
-            
-           
 
             let cacheDir = await tool.cacheDir(downloadDirectory, BUNDLETOOL_NAME, versionTag, arch);
             const toolPath = path.join(cacheDir, bundletoolJarName);
-
             task.setVariable(BUNDLETOOL_ENV_PATH, toolPath);
-
         } else {
             const toolPath = path.join(bundletoolPath, bundletoolJarName);
             task.setVariable(BUNDLETOOL_ENV_PATH, toolPath);
@@ -68,7 +65,7 @@ async function run() {
     }
 }
 
-async function downloading(fileName: string, url: string, downloadedFile:string) {
+async function downloading(fileName: string, url: string, downloadedFile: string) {
     const curlIsSilent: boolean = task.getBoolInput('curlIsSilent', false);
     const ignoreSsl = task.getBoolInput('ignorSslError', false);
     let curl: string = task.which('curl', true);
@@ -82,7 +79,7 @@ async function downloading(fileName: string, url: string, downloadedFile:string)
     if (downloadedFile) {
         args.push('--output', downloadedFile);
     }
-    
+
     let curlResult = task.execSync(curl, args);
     return curlResult;
 }
